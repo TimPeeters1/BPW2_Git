@@ -11,7 +11,7 @@ public class UI_LookAt : MonoBehaviour
 
     [SerializeField] float distance;
 
-    private void Start()
+    private void OnEnable()
     {
         Player = GameObject.FindGameObjectWithTag("Player");
     }

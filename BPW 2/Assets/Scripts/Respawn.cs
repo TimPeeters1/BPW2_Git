@@ -31,6 +31,14 @@ public class Respawn : MonoBehaviour
         mainCamera.m_Follow = Player.transform;
         mainCamera.m_LookAt = Player.transform;
 
+        UI_LookAt[] ui = FindObjectsOfType<UI_LookAt>();
+        for (int i = 0; i < ui.Length; i++)
+        {
+            ui[i].enabled = true;
+        }
+
+
+
         Destroy(this.gameObject);
     }
 }

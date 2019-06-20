@@ -54,10 +54,14 @@ public class SpaceshipEffects : MonoBehaviour
     {
         mainCamera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
         vCam = mainCamera.GetComponent<CinemachineVirtualCamera>();
-        
 
-        if(!isAI)
-        controller = GetComponent<SpaceshipController>();
+
+        if (!isAI)
+        {
+            controller = GetComponent<SpaceshipController>();
+            Crosshair = GameObject.FindGameObjectWithTag("Crosshair").GetComponent<RectTransform>();
+            healthBar = GameObject.FindGameObjectWithTag("Healthbar").GetComponent<Image>();
+        }
     }
 
     void UpdateUI()

@@ -59,8 +59,8 @@ public class SpaceshipAI : MonoBehaviour
     float Timer;
     Quaternion rotation;
     float closest;
-    [SerializeField] List<GameObject> possibleTargets;
-    [SerializeField] List<GameObject> enemyMotherships;
+    public List<GameObject> possibleTargets;
+    List<GameObject> enemyMotherships;
 
     private void Start()
     {
@@ -124,9 +124,12 @@ public class SpaceshipAI : MonoBehaviour
             angle = Mathf.Abs(Vector3.Angle(transform.forward, Target.transform.position - transform.position));
         }
 
-        if (distance < maxDistance && State != AI_State.Evading && angle < Fov && Target != null)
+        if (possibleTargets.Count >= 0 && enemyMotherships.Count >= 0)
         {
-            State = AI_State.Following; 
+            if (distance < maxDistance && State != AI_State.Evading && angle < Fov && Target != null)
+            {
+                State = AI_State.Following;
+            }
         }
 
         if(distance < attackDistance && angle < Fov)
@@ -256,7 +259,10 @@ public class SpaceshipAI : MonoBehaviour
             {
                 if (ship.gameObject != this.gameObject && ship.team != GetComponent<SpaceshipHealth>().team)
                 {
-                    possibleTargets.Add(ship.gameObject);
+                    if (!possibleTargets.Contains(ship.gameObject))
+                    {
+                         possibleTargets.Add(ship.gameObject);
+                    }
 
                     Vector3 distanceToTarget = ship.transform.position - transform.position;
                     float distance = distanceToTarget.sqrMagnitude;
@@ -287,13 +293,11 @@ public class SpaceshipAI : MonoBehaviour
             }
         }
 
-        Ray forwardRay;
-
-        Vector3 modifiedRotation = rotation * transform.forward;
-        forwardRay = new Ray(transform.position, modifiedRotation);
-
-        Vector3 targetDir = forwardRay.GetPoint(100f);
+        Vector3 targetDir = Target.transform.position - transform.position;
         Quaternion targetRotation = Quaternion.LookRotation(targetDir, Target.transform.up);
+
+        Ray forwardRay = new Ray(transform.position, transform.forward);
+        RaycastHit hit;
 
         //transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 0.5f);
         transform.position = Vector3.MoveTowards(transform.position, targetDir, followSpeed * Time.deltaTime);

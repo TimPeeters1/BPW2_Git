@@ -68,11 +68,15 @@ public class SpaceshipHealth : MonoBehaviour, IDamagable
         mothership.FighterAmount--;
         Instantiate(explosionPrefab, transform.position, transform.rotation);
 
-        try
+        SpaceshipAI[] ai = FindObjectsOfType<SpaceshipAI>();
+        for (int i = 0; i < ai.Length; i++)
         {
-            GetComponent<PlayerRespawn>().InitRespawn();
+            if (ai[i].possibleTargets.Contains(this.gameObject))
+            {
+                ai[i].possibleTargets.Remove(this.gameObject);
+                Debug.Log("Remove: " + gameObject.name);
+            }
         }
-        catch { }
 
         if (GetComponent<SpaceshipAI>() != null)
         {
@@ -80,7 +84,15 @@ public class SpaceshipHealth : MonoBehaviour, IDamagable
         }
 
 
+
         Destroy(this.gameObject);
+        try
+        {
+            GetComponent<PlayerRespawn>().InitRespawn();
+        }
+        catch { }
+
+        
 
  
 

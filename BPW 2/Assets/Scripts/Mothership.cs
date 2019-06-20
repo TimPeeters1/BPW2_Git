@@ -96,7 +96,7 @@ public class Mothership : MonoBehaviour, IDamagable
 
         for (int i = 0; i < Random.Range(maxSpawnSize/4, maxSpawnSize); i++)
         {
-            Instantiate(fighterPrefab , spawnPosition.transform.position + (Random.insideUnitSphere * 20), spawnPosition.transform.rotation);
+            Instantiate(fighterPrefab , spawnPosition.transform.position + (Random.insideUnitSphere * 50), spawnPosition.transform.rotation);
         }
 
         StartCoroutine(SpawnFighters());
