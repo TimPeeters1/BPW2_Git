@@ -6,6 +6,9 @@ TagManager:
   tags:
   - AI
   - MainCanvas
+  - PlayerSpawn
+  - Healthbar
+  - Crosshair
   layers:
   - Default
   - TransparentFX

@@ -133,7 +133,7 @@ public class SpaceshipController : MonoBehaviour
         {
             rb.velocity = rb.velocity * Inertia;
             rb.angularVelocity = rb.angularVelocity * Inertia;
-            mainCamera.fieldOfView = Mathf.Lerp(mainCamera.fieldOfView, 75, 4f * Time.deltaTime);
+            //mainCamera.fieldOfView = Mathf.Lerp(mainCamera.fieldOfView, 75, 4f * Time.deltaTime);
 
         }
 

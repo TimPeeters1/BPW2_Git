@@ -8,6 +8,8 @@ public class GameManager : MonoBehaviour
 
     public TeamComponent[] teamSettings;
 
+    public int Waves;
+
     public static GameManager Instance
     {
         get
@@ -20,5 +22,6 @@ public class GameManager : MonoBehaviour
             return instance;
         }
     }
+
 
 }

@@ -20,7 +20,7 @@ public class SpaceshipAI_Gun : MonoBehaviour
     private void Start()
     {
         mainCamera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
-
+        source = GetComponent<AudioSource>();
 
         LaserTracers = new LineRenderer[LaserPositions.Length];
         for (int i = 0; i < LaserPositions.Length; i++)
@@ -36,13 +36,15 @@ public class SpaceshipAI_Gun : MonoBehaviour
             try
             {
                 hit.collider.GetComponent<IDamagable>().TakeDamage(gunDamage, GetComponentInParent<SpaceshipHealth>().team);
+                hit.collider.GetComponentInParent<IDamagable>().TakeDamage(gunDamage, GetComponentInParent<SpaceshipHealth>().team);
             }
             catch { }
         }
 
         StartCoroutine(ShowLaser(ray, attackDistance));
 
-        source.PlayOneShot(shotSounds[Random.Range(0, shotSounds.Length)]);
+        source.clip = shotSounds[Random.Range(0, shotSounds.Length)];
+        source.Play();
     }
 
     IEnumerator ShowLaser(Ray ray, float distance)

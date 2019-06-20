@@ -5278,8 +5278,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cd1f4f2cacc65314baf1fb76de3ec774, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  minSize: 0.2
-  maxSize: 2
+  minSize: 0.5
+  maxSize: 3
   distance: 0
 --- !u!1 &2743185060999219743
 GameObject:
@@ -5502,7 +5502,7 @@ LineRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7051112681561352672}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -5674,7 +5674,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: -2802295934898407244, guid: 2f9889e9377d03e47a53b96feac1244d,
     type: 2}
   m_audioClip: {fileID: 8300000, guid: 8961d3cc12ffd77408d437216412c6ad, type: 3}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
   Loop: 0
@@ -5682,9 +5682,9 @@ AudioSource:
   Spatialize: 0
   SpatializePostEffects: 0
   Priority: 128
-  DopplerLevel: 0.2
+  DopplerLevel: 0.5
   MinDistance: 1
-  MaxDistance: 500
+  MaxDistance: 3000
   Pan2D: 0
   rolloffMode: 2
   BypassEffects: 0
@@ -5696,12 +5696,12 @@ AudioSource:
     - serializedVersion: 3
       time: 0
       value: 0.50860596
-      inSlope: 0
-      outSlope: 0
+      inSlope: -1.0222598
+      outSlope: -1.0222598
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
-      outWeight: 0
+      outWeight: 0.13149847
     - serializedVersion: 3
       time: 1
       value: 0
@@ -5797,7 +5797,7 @@ LineRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7051112681788322602}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -6130,13 +6130,16 @@ MonoBehaviour:
   State: 3
   Target: {fileID: 0}
   smoothing: 0.6
-  followSpeed: 100
+  followSpeed: 150
   minDistance: 100
   maxDistance: 2000
-  attackDistance: 500
-  Fov: 80
+  attackDistance: 1000
+  gunAccuracy: 5
+  Fov: 110
   angle: 0
   TargetIndicator: {fileID: 2743185060965709284}
+  possibleTargets: []
+  enemyMotherships: []
 --- !u!114 &198993934771592370
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6150,10 +6153,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: {fileID: 11400000, guid: a30e699c38304bd439050ae1de50d4d1, type: 2}
+  mothership: {fileID: 0}
   currentHealth: 0
   maxHealth: 100
   explosionPrefab: {fileID: 1329845292236604, guid: 9bba9cf244c53c5439505dfc96fdd11c,
     type: 3}
+  maxFollowing: 3
+  following: 0
 --- !u!114 &127179178
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6171,7 +6177,7 @@ MonoBehaviour:
     type: 3}
   m_targetIconOffScreen: {fileID: 21300000, guid: fe388e813fd55554a8616487e52780ae,
     type: 3}
-  m_edgeBuffer: 100
+  m_edgeBuffer: 90
   m_targetIconScale: 0.2
   ShowDebugLines: 1
 --- !u!114 &5041363046093651425
@@ -6207,7 +6213,7 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 17.230225, y: 3, z: 12.238281}
+  m_Size: {x: 20, y: 5, z: 15}
   m_Center: {x: 0.029541016, y: -2.44, z: 2.5838623}
 --- !u!1 &7051112682983096693
 GameObject:

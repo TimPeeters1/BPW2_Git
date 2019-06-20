@@ -29,7 +29,7 @@ public class UI_LookAt : MonoBehaviour
 
         if(transform.localScale.x <= minSize)
         {
-            //transform.localScale = Vector3.zero;
+            transform.localScale = Vector3.zero;
         }
 
         if(transform.localScale.x >= maxSize)

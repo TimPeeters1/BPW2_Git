@@ -14,6 +14,7 @@ public class SpaceshipHealth : MonoBehaviour, IDamagable
 {
     [Space] 
     public TeamComponent team;
+    public Mothership mothership;
 
     [Space]
     public float currentHealth;
@@ -23,10 +24,27 @@ public class SpaceshipHealth : MonoBehaviour, IDamagable
     
     [SerializeField] GameObject explosionPrefab;
 
+    [Space]
+    [Header("Team AI Settings")]
+    public int maxFollowing;    
+    public int following;
+
+
     void Start()
     {
         currentHealth = maxHealth;
         GetComponent<SpaceshipEffects>().UpdateHealthbar(maxHealth, currentHealth);
+        Mothership[] ships = FindObjectsOfType<Mothership>();
+
+        for (int i = 0; i < ships.Length; i++)
+        {
+            if(ships[i].Team== team)
+            {
+                mothership = ships[i];
+                mothership.FighterAmount++;
+            }
+        }
+
         
     }
 
@@ -47,14 +65,25 @@ public class SpaceshipHealth : MonoBehaviour, IDamagable
 
     void IDamagable.Die()
     {
+        mothership.FighterAmount--;
         Instantiate(explosionPrefab, transform.position, transform.rotation);
+
+        try
+        {
+            GetComponent<PlayerRespawn>().InitRespawn();
+        }
+        catch { }
 
         if (GetComponent<SpaceshipAI>() != null)
         {
             Destroy(GetComponent<TargetIndicator>().m_icon.gameObject);
         }
 
+
         Destroy(this.gameObject);
+
+ 
+
     }
 }
 

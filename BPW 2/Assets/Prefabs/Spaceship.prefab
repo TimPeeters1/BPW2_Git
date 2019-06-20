@@ -5109,6 +5109,7 @@ GameObject:
   - component: {fileID: 8589310918513952387}
   - component: {fileID: 1415335931}
   - component: {fileID: 27456958}
+  - component: {fileID: 7977661702912206011}
   m_Layer: 0
   m_Name: Spaceship
   m_TagString: Player
@@ -5172,7 +5173,7 @@ MonoBehaviour:
   VerticalAxis: Vertical
   HorizontalAxis: Horizontal
   ShotButton: 323
-  LaserRange: 1000
+  LaserRange: 1500
 --- !u!114 &8589310918513952384
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5187,8 +5188,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   noTurn: 0.02
   turnSpeed: 150
-  NormalThrust: 300
-  BoostThrust: 500
+  NormalThrust: 400
+  BoostThrust: 700
   Acceleration: 100
   currentSpeed: 0
   Inertia: 0.98
@@ -5227,10 +5228,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   team: {fileID: 11400000, guid: c00f66b91bd42e241983c01ae6e12089, type: 2}
+  mothership: {fileID: 0}
   currentHealth: 0
   maxHealth: 100
   explosionPrefab: {fileID: 1329845292236604, guid: 9bba9cf244c53c5439505dfc96fdd11c,
     type: 3}
+  maxFollowing: 0
+  following: 0
 --- !u!65 &27456958
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -5244,6 +5248,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 17.230225, y: 3, z: 12.238281}
   m_Center: {x: 0.029541016, y: -2.44, z: 2.5838623}
+--- !u!114 &7977661702912206011
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8589310918513952386}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45f75f041cafa0240b216bf28a43c879, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  respawnPrefab: {fileID: 0}
 --- !u!1 &8589310918715577007
 GameObject:
   m_ObjectHideFlags: 0
@@ -5782,7 +5799,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: -251790622756405700, guid: 2f9889e9377d03e47a53b96feac1244d,
     type: 2}
   m_audioClip: {fileID: 0}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_Volume: 0.5
   m_Pitch: 1
   Loop: 0

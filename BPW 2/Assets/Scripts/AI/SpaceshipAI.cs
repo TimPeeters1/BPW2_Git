@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+
 [RequireComponent(typeof(SpaceshipHealth))]
 [RequireComponent(typeof(TargetIndicator))]
 public class SpaceshipAI : MonoBehaviour
@@ -13,7 +14,8 @@ public class SpaceshipAI : MonoBehaviour
         Idle,
         Following,
         Evading,
-        TargetSearch
+        TargetSearch,
+        AttackMothership
     }
 
     [Space]
@@ -35,6 +37,7 @@ public class SpaceshipAI : MonoBehaviour
 
     [Space]
     [SerializeField] float attackDistance;
+    [SerializeField] float gunAccuracy;
 
     [Space]
     [SerializeField] float Fov;
@@ -55,16 +58,34 @@ public class SpaceshipAI : MonoBehaviour
     bool isTurning;
     float Timer;
     Quaternion rotation;
+    float closest;
+    [SerializeField] List<GameObject> possibleTargets;
+    [SerializeField] List<GameObject> enemyMotherships;
 
     private void Start()
     {
+        //Target = this.gameObject;
         rb = GetComponent<Rigidbody>();
         GeneratePosition();
 
-        State = AI_State.Idle;
+        // State = AI_State.Idle;
         TargetIndicator.color = GetComponent<SpaceshipHealth>().team.TeamColor;
+        possibleTargets = new List<GameObject>();
+        enemyMotherships = new List<GameObject>();
 
-        if(Target != null) { } else
+        SearchForTarget();
+
+        Mothership[] motherships = FindObjectsOfType<Mothership>();
+
+        foreach (Mothership ship in motherships)
+        {
+            if(ship.Team != GetComponent<SpaceshipHealth>().team)
+            {
+                enemyMotherships.Add(ship.gameObject);
+            }
+        }
+
+        if (Target == null)
         {
             State = AI_State.TargetSearch;
         }
@@ -86,14 +107,23 @@ public class SpaceshipAI : MonoBehaviour
             case AI_State.TargetSearch:
                 SearchForTarget();
                 break;
+            case AI_State.AttackMothership:
+                AttackMothership();
+                break;
         }
     }
 
     void Update()
     {
-        distance = Vector3.Distance(Target.transform.position, transform.position);
-        angle = Mathf.Abs(Vector3.Angle(transform.forward, Target.transform.position - transform.position));
-        
+        if(Target == null){
+            State = AI_State.TargetSearch;
+        }
+        else
+        {
+            distance = Vector3.Distance(Target.transform.position, transform.position);
+            angle = Mathf.Abs(Vector3.Angle(transform.forward, Target.transform.position - transform.position));
+        }
+
         if (distance < maxDistance && State != AI_State.Evading && angle < Fov && Target != null)
         {
             State = AI_State.Following; 
@@ -102,6 +132,16 @@ public class SpaceshipAI : MonoBehaviour
         if(distance < attackDistance && angle < Fov)
         {
             AttackTarget();
+        }
+
+        if(possibleTargets.Count <= 0 && enemyMotherships.Count <= 0)
+        {
+            State = AI_State.Idle;
+        }
+
+        if (possibleTargets.Count <= 0 && enemyMotherships.Count > 0)
+        {
+            State = AI_State.AttackMothership;
         }
 
         StateSwitch();
@@ -119,12 +159,13 @@ public class SpaceshipAI : MonoBehaviour
     {
         isFiring = true;
 
-        yield return new WaitForSeconds(Random.Range(0, 2));    
+        yield return new WaitForSeconds(Random.Range(0.5f, 1.5f));    
 
          Vector3 targetDirection = Target.transform.position - transform.position;
-         Vector3 randomizedDirection = new Vector3(targetDirection.x + Random.Range(0, 20), targetDirection.y + Random.Range(0, 20), targetDirection.z + Random.Range(0, 20));
+         Vector3 randomizedDirection = new Vector3(targetDirection.x + Random.Range(0, gunAccuracy), targetDirection.y + Random.Range(0, gunAccuracy), targetDirection.z + Random.Range(0, gunAccuracy));
 
          Ray ray = new Ray(transform.position, randomizedDirection);
+         
 
          SpaceshipAI_Gun gunScript = GetComponentInChildren<SpaceshipAI_Gun>();
          gunScript.shot(ray, attackDistance);
@@ -159,7 +200,6 @@ public class SpaceshipAI : MonoBehaviour
         Ray forwardRay = new Ray(transform.position, transform.forward);
         RaycastHit hit;
 
-    
         if(Physics.SphereCast(forwardRay, minDistance/2, out hit, minDistance)){
             Timer = Random.Range(0.5f, 2);
 
@@ -209,30 +249,56 @@ public class SpaceshipAI : MonoBehaviour
     void SearchForTarget()
     {
         SpaceshipHealth[] spaceships = FindObjectsOfType<SpaceshipHealth>();
-        List<GameObject> possibleTargets = new List<GameObject>();
-        
-        foreach (SpaceshipHealth ship in spaceships)
-        {
-            possibleTargets.Add(ship.gameObject);
-        }
 
-        float minDist = Mathf.Infinity;
+        closest = Mathf.Infinity;
 
-        for (int i = 0; i < possibleTargets.Count; i++)
-        {
-            float newAngle = Mathf.Abs(Vector3.Angle(transform.forward, possibleTargets[i].transform.position - transform.position));
-            float distance = Vector3.Distance(possibleTargets[i].transform.position, transform.position);
-
-            if(newAngle < Fov && distance < minDist && possibleTargets[i] != this.gameObject 
-                && possibleTargets[i].GetComponent<SpaceshipHealth>().team != GetComponent<SpaceshipHealth>().team) 
+            foreach (SpaceshipHealth ship in spaceships)
             {
-                distance = minDist;
-                Target = possibleTargets[i];
+                if (ship.gameObject != this.gameObject && ship.team != GetComponent<SpaceshipHealth>().team)
+                {
+                    possibleTargets.Add(ship.gameObject);
+
+                    Vector3 distanceToTarget = ship.transform.position - transform.position;
+                    float distance = distanceToTarget.sqrMagnitude;
+
+                    if (distance < closest)
+                    {
+                        closest = distance;
+                        Target = ship.gameObject;
+                    }
+                }
+            }
+
+            if (State != AI_State.Idle)
+            {
+                State = AI_State.Following;
             }
         }
 
-        if (State != AI_State.Idle) {
-           State = AI_State.Following;
+    void AttackMothership()
+    {
+        Mothership[] ships = FindObjectsOfType<Mothership>();
+
+        for (int i = 0; i < ships.Length; i++)
+        {
+            if (ships[i].Team != GetComponent<SpaceshipHealth>().team)
+            {
+                Target = ships[i].gameObject;
+            }
         }
+
+        Ray forwardRay;
+
+        Vector3 modifiedRotation = rotation * transform.forward;
+        forwardRay = new Ray(transform.position, modifiedRotation);
+
+        Vector3 targetDir = forwardRay.GetPoint(100f);
+        Quaternion targetRotation = Quaternion.LookRotation(targetDir, Target.transform.up);
+
+        //transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 0.5f);
+        transform.position = Vector3.MoveTowards(transform.position, targetDir, followSpeed * Time.deltaTime);
+
     }
 }
+
+
