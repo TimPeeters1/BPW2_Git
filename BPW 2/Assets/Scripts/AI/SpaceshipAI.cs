@@ -9,15 +9,7 @@ using UnityEngine.UI;
 public class SpaceshipAI : MonoBehaviour
 {
 
-    public enum AI_State
-    {
-        Idle,
-        Following,
-        Evading,
-        TargetSearch,
-        AttackMothership
-    }
-
+    #region Serialized Variables
     [Space]
     [SerializeField] AI_State State;
 
@@ -47,20 +39,35 @@ public class SpaceshipAI : MonoBehaviour
     [Space]
     [Header("UI Components")]
     [SerializeField] Image TargetIndicator; //The image that gets drawn on the ship/ai when in cameraview
+    #endregion
 
-    Rigidbody rb;
-    float distance;
+    [HideInInspector] public List<GameObject> possibleTargets;
 
-    Vector3 randomPoint;
-    float distanceToPoint;
+    public enum AI_State
+    {
+        Idle,
+        Following,
+        Evading,
+        TargetSearch,
+        AttackMothership
+    }
 
-    bool isFiring;
-    bool isTurning;
-    float Timer;
+    #region Private
+    private Rigidbody rb;
+    private Vector3 randomPoint;
     Quaternion rotation;
-    float closest;
-    public List<GameObject> possibleTargets;
-    List<GameObject> enemyMotherships;
+
+    private float distance;
+    private float distanceToPoint;
+    private float Timer;
+    private float closest;
+
+    private bool isFiring;
+    private bool isTurning;
+
+    private List<GameObject> enemyMotherships;
+    #endregion
+
 
     private void Start()
     {
@@ -299,8 +306,17 @@ public class SpaceshipAI : MonoBehaviour
         Ray forwardRay = new Ray(transform.position, transform.forward);
         RaycastHit hit;
 
-        //transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 0.5f);
-        transform.position = Vector3.MoveTowards(transform.position, targetDir, followSpeed * Time.deltaTime);
+        if (Physics.SphereCast(forwardRay, minDistance, out hit, minDistance))
+        {
+            Timer = Random.Range(1f, 3);
+
+            State = AI_State.Evading;
+        }
+        else
+        {
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * smoothing);
+            transform.position = Vector3.MoveTowards(transform.position, forwardRay.GetPoint(10f), followSpeed * Time.deltaTime);
+        }
 
     }
 }

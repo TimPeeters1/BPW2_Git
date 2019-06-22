@@ -74,7 +74,6 @@ public class SpaceshipHealth : MonoBehaviour, IDamagable
             if (ai[i].possibleTargets.Contains(this.gameObject))
             {
                 ai[i].possibleTargets.Remove(this.gameObject);
-                Debug.Log("Remove: " + gameObject.name);
             }
         }
 

@@ -15,7 +15,7 @@ public class SpaceshipAI_Gun : MonoBehaviour
 
     Camera mainCamera;
 
-    int gunDamage = 10;
+    [SerializeField] int gunDamage = 10;
 
     private void Start()
     {
@@ -35,8 +35,14 @@ public class SpaceshipAI_Gun : MonoBehaviour
         if(Physics.Raycast(ray, out hit, attackDistance)){
             try
             {
-                hit.collider.GetComponent<IDamagable>().TakeDamage(gunDamage, GetComponentInParent<SpaceshipHealth>().team);
-                hit.collider.GetComponentInParent<IDamagable>().TakeDamage(gunDamage, GetComponentInParent<SpaceshipHealth>().team);
+                if (hit.collider.GetComponent<IDamagable>() != null)
+                {
+                    hit.collider.GetComponent<IDamagable>().TakeDamage(gunDamage, GetComponentInParent<SpaceshipHealth>().team);
+                }
+                else
+                {
+                    hit.collider.GetComponentInParent<IDamagable>().TakeDamage(gunDamage, GetComponentInParent<SpaceshipHealth>().team);
+                }
             }
             catch { }
         }

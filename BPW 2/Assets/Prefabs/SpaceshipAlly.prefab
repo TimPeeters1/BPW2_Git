@@ -54,6 +54,7 @@ MonoBehaviour:
   - {fileID: 625519958633373229}
   - {fileID: 625519958877242599}
   LaserTracers: []
+  gunDamage: 10
 --- !u!82 &7598943347420916833
 AudioSource:
   m_ObjectHideFlags: 0
@@ -731,12 +732,11 @@ MonoBehaviour:
   minDistance: 100
   maxDistance: 2000
   attackDistance: 1000
-  gunAccuracy: 5
+  gunAccuracy: 10
   Fov: 110
   angle: 0
   TargetIndicator: {fileID: 5721012925627898083}
   possibleTargets: []
-  enemyMotherships: []
 --- !u!114 &7761436480013627829
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -776,7 +776,7 @@ MonoBehaviour:
     type: 3}
   m_edgeBuffer: 90
   m_targetIconScale: 0.2
-  ShowDebugLines: 1
+  ShowDebugLines: 0
 --- !u!114 &3207225168469266662
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -810,7 +810,7 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 20, y: 5, z: 15}
+  m_Size: {x: 30, y: 10, z: 20}
   m_Center: {x: 0.029541016, y: -2.44, z: 2.5838623}
 --- !u!1 &625519959771221313
 GameObject:
@@ -6187,7 +6187,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   minSize: 0.5
-  maxSize: 3
+  maxSize: 5
   distance: 0
 --- !u!1 &5721422489252332356
 GameObject:

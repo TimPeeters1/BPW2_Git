@@ -17,7 +17,7 @@ public class SpaceshipGun : MonoBehaviour
 
     Camera mainCamera;
 
-    int gunDamage = 10;
+    [SerializeField] int gunDamage = 10;
 
     private void Start()
     {
@@ -51,21 +51,26 @@ public class SpaceshipGun : MonoBehaviour
         {
                 Ray weaponRay = new Ray(LaserPositions[i].transform.position, camRay.GetPoint(FindObjectOfType<InputManager>().LaserRange) - LaserPositions[i].transform.position);
 
-                if(Physics.Raycast(camRay, out hit))
-                {
-                    try
-                    {  
-                        hit.collider.GetComponent<IDamagable>().TakeDamage(gunDamage, GetComponentInParent<SpaceshipHealth>().team);
-                    }
-                    catch { }
-
-                    
-                }
-
-            StartCoroutine(ShowLaser(weaponRay));
-
-            source.PlayOneShot(shotSounds[Random.Range(0, shotSounds.Length)]);
+                StartCoroutine(ShowLaser(weaponRay));
         }
+
+        if (Physics.Raycast(camRay, out hit))
+        {
+            try
+            {
+                if (hit.collider.GetComponent<IDamagable>() != null)
+                {
+                    hit.collider.GetComponent<IDamagable>().TakeDamage(gunDamage, GetComponentInParent<SpaceshipHealth>().team);
+                }
+                else
+                {
+                    hit.collider.GetComponentInParent<IDamagable>().TakeDamage(gunDamage, GetComponentInParent<SpaceshipHealth>().team);
+                }
+            }
+            catch { }
+        }
+
+        source.PlayOneShot(shotSounds[Random.Range(0, shotSounds.Length)]);
     }
 
     IEnumerator ShowLaser(Ray ray)

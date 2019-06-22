@@ -37,8 +37,6 @@ public class Respawn : MonoBehaviour
             ui[i].enabled = true;
         }
 
-
-
         Destroy(this.gameObject);
     }
 }

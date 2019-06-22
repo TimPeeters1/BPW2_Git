@@ -5,9 +5,7 @@ using UnityEngine.UI;
 
 public class Mothership : MonoBehaviour, IDamagable
 {
-
-  
-
+    #region Serialized Variables
     [SerializeField] float speed;
     [SerializeField] float smoothing;
 
@@ -17,6 +15,10 @@ public class Mothership : MonoBehaviour, IDamagable
     [Header("Health Settings")]
     [SerializeField] float maxHealth;
     float currentHealth;
+
+    [SerializeField] Transform endCamPosition;
+    [SerializeField] GameObject endCameraPrefab;
+    [SerializeField] GameObject deathParticle;
 
     [Space]
     public TeamComponent Team;
@@ -33,10 +35,11 @@ public class Mothership : MonoBehaviour, IDamagable
     [SerializeField] int maxSpawnSize;
     [SerializeField] GameObject spawnPosition;
     [SerializeField] float spawnTime;
+    #endregion
 
-
-    Vector3 randomPoint;
-    float distanceToPoint;
+    private Vector3 randomPoint;
+    private float distanceToPoint;
+    private bool hasDied = false;
  
     private void Start()
     {
@@ -80,14 +83,34 @@ public class Mothership : MonoBehaviour, IDamagable
 
     void IDamagable.TakeDamage(int damage, TeamComponent damagingTeam)
     {
-        currentHealth -= damage;
-
+        if(damage <= 0 || (currentHealth-=damage) <= 0) {
+            if(!hasDied)
+            GetComponent<IDamagable>().Die();
+        }
+        else {
+            if(damagingTeam != this.Team)
+            currentHealth -= damage;
+        }
+   
         MothershipInfo.text = "Mothership HP: " + currentHealth + "/" + maxHealth;
     }
-
+ 
     void IDamagable.Die()
     {
-        
+        hasDied = true;
+        Instantiate(deathParticle, transform.position, transform.rotation);
+        GameObject endCam = Instantiate(endCameraPrefab, endCamPosition.position, endCamPosition.rotation);
+
+        if (GameObject.FindGameObjectWithTag("Player").GetComponent<SpaceshipHealth>().team != Team)
+        {
+            endCam.GetComponent<EndScreen>().hasLost = false;
+        }
+        else
+        {
+            endCam.GetComponent<EndScreen>().hasLost = true;
+        }
+
+        Destroy(this.gameObject, 3);
     }
 
     IEnumerator SpawnFighters()
